@@ -121,9 +121,16 @@ profile, you'd add:
 The README should explain what the profile does, how to take advantage of it,
 and how to install it.
 
-Regardless of the IDE used, every submitted project must
-still be compilable with cmake and make.
+## Tests
+The code was developed using the [Catch testing framework](https://github.com/catchorg/Catch2). 
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+* First compile tests_main.cpp in order to not have to recompile 
+sh```
+$ g++ --std=c++11 tests_main.cpp -c
+```
+* Next compile tests
+sh```
+$ g++ --std=c++11 tests_main.o test_rmse.cpp -o test_rmse
+$ ./test_rmse -r compact
+```
+* If changes are made to the test file, tests_main does not need to be recompiled

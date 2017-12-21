@@ -15,13 +15,13 @@ VectorXd Tools::CalculateRMSE(const std::vector<VectorXd> &estimations,
   int est_sz = estimations.size();
   int grt_sz = ground_truth.size();
 
+  VectorXd rmse(4);
+  rmse.setZero();
+
   if (est_sz == 0 || est_sz != grt_sz) {
-    std::cout << "Invalid size - DEBUG";
     return rmse;
   }
   
-  VectorXd rmse(estimations[0].size());
-  rmse.setZero();
 
   for (int i = 0; i < est_sz; ++i) {
     VectorXd accum = estimations[i] - ground_truth[i];
@@ -39,7 +39,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   float vx = x_state(2);
   float vy = x_state(3);
   float rho = std::pow(std::pow(px,2) + std::pow(py,2), 0.5);
-  if (rho < 0.001) {
+  if (rho < 0.032) {
+    Hj.setZero();
     return Hj;
   }
 
