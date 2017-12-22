@@ -46,6 +46,7 @@ FusionEKF::FusionEKF() {
   */
   float noise_ax = 9;
   float noise_ay = 9;
+  Tools calc;
 }
 
 /**
@@ -76,7 +77,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       */
 
       float rho = measurement_pack.raw_measurements_(0);
-      float phi = std::fmod(measurement_pack.raw_measurements_(1), (2*M_PI)) - M_PI;
+      float phi = tools.NormalizePhi(measurement_pack.raw_measurements_(1));
       float rho_dot = measurement_pack.raw_measurements_(2);
       ekf_.x_ << std::cos(phi) * rho,
                  std::sin(phi) * rho,

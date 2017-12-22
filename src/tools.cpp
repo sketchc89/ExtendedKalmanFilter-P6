@@ -1,3 +1,6 @@
+#ifndef M_PI
+  #define M_PI 3.1415926535897;
+#endif
 #include <cmath>
 #include <iostream>
 #include "tools.h"
@@ -50,4 +53,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
         px*(vy*px - vx*py)/std::pow(rho,3),
         px/rho, py/rho;
   return Hj;
+}
+
+float Tools::NormalizePhi(float phi) {
+  return std::fmod(phi, 2*M_PI) - M_PI;  
 }
