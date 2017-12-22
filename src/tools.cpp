@@ -56,5 +56,5 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 }
 
 float Tools::NormalizePhi(float phi) {
-  return std::fmod(phi, 2*M_PI) - M_PI;  
+  return phi - 2*M_PI*std::floor((phi + M_PI) / (2*M_PI));
 }

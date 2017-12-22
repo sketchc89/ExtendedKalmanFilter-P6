@@ -1,3 +1,6 @@
+#ifndef M_PI
+  #define M_PI 3.1415926535897;
+#endif
 #include "catch.hpp"
 #include "../tools.cpp"
 
@@ -95,4 +98,25 @@ TEST_CASE("Jacobian calculated", "[jacobian]") {
   REQUIRE(Hj(2,1) == Approx(0).epsilon(0.000001));
   REQUIRE(Hj(2,2) == Approx(0.447214).epsilon(0.000001));
   REQUIRE(Hj(2,3) == Approx(0.894427).epsilon(0.000001));
+}
+
+TEST_CASE("Normalize phi calculated" "[normalize-phi]") {
+  Tools calc;
+  
+  REQUIRE(calc.NormalizePhi(0.25*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-0.25*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(0.75*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-0.75*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(1.25*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-1.25*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(1.75*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-1.75*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(2.25*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-2.25*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(2.75*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-2.75*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(3.25*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-3.25*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(3.75*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(-3.75*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
 }
