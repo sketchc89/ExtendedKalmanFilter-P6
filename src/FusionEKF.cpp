@@ -1,12 +1,17 @@
+#ifndef M_PI
+ #define M_PI 3.1415926535897;
+#endif
 #include "FusionEKF.h"
 #include "tools.h"
 #include "Eigen/Dense"
+#include <cmath>
 #include <iostream>
 
 using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
+
 
 /*
  * Constructor.
@@ -31,13 +36,16 @@ FusionEKF::FusionEKF() {
         0, 0.0009, 0,
         0, 0, 0.09;
 
+  H_laser_ << 1, 0, 0, 0,
+              0, 1, 0, 0;
+  Hj_.setZero();
   /**
   TODO:
     * Finish initializing the FusionEKF.
     * Set the process and measurement noises
   */
-
-
+  float noise_ax = 9;
+  float noise_ay = 9;
 }
 
 /**
@@ -52,26 +60,37 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Initialization
    ****************************************************************************/
   if (!is_initialized_) {
-    /**
-    TODO:
-      * Initialize the state ekf_.x_ with the first measurement.
-      * Create the covariance matrix.
-      * Remember: you'll need to convert radar from polar to cartesian coordinates.
-    */
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
+    ekf_.P_ = MatrixXd(4,4);
+    ekf_.P_ << 1, 0, 0, 0,
+               0, 1, 0, 0,
+               0, 0, 1000, 0,
+               0, 0, 0, 1000;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
+
+      float rho = measurement_pack.raw_measurements_(0);
+      float phi = std::fmod(measurement_pack.raw_measurements_(1), (2*M_PI)) - M_PI;
+      float rho_dot = measurement_pack.raw_measurements_(2);
+      ekf_.x_ << std::cos(phi) * rho,
+                 std::sin(phi) * rho,
+                 std::cos(phi) * rho_dot,
+                 std::sin(phi) * rho_dot;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
       Initialize state.
       */
+      ekf_.x_ << measurement_pack.raw_measurements_(0), 
+                 measurement_pack.raw_measurements_(1),
+                 0,
+                 0;
     }
 
     // done initializing, no need to predict or update
@@ -90,6 +109,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Update the process noise covariance matrix.
      * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
+
 
   ekf_.Predict();
 
