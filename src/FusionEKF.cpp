@@ -98,13 +98,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Prediction
    ****************************************************************************/
 
-  /**
-   TODO:
-      - Time is measured in seconds.
-     * Update the process noise covariance matrix.
-   */
-
-
   float dt;
   float noise_ax = 9;
   float noise_ay = 9;
@@ -116,25 +109,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
              0, std::pow(dt,4)*noise_ay/4, 0, std::pow(dt,3)*noise_ay/2,
              std::pow(dt,3)*noise_ax/2, 0, std::pow(dt,2)*noise_ax, 0,
              0, std::pow(dt,3)*noise_ay/2, 0, std::pow(dt,2)*noise_ay;
+
   ekf_.Predict();
 
   /*****************************************************************************
    *  Update
    ****************************************************************************/
 
-  /**
-   TODO:
-     * Use the sensor type to perform the update step.
-     * Update the state and covariance matrices.
-   */
-
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    // Radar updates
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
-    // Laser updates
+    ekf_.Update(measurement_pack.raw_measurements_);
   }
 
-  // print the output
   cout << "x_ = " << ekf_.x_ << endl;
   cout << "P_ = " << ekf_.P_ << endl;
 }
