@@ -1,3 +1,4 @@
+#include "tools.h"
 #include "kalman_filter.h"
 
 using Eigen::MatrixXd;
@@ -25,19 +26,21 @@ void KalmanFilter::Predict() {
 void KalmanFilter::Update(const VectorXd &z) {
   VectorXd z_prev = H_ * x_;
   VectorXd y = z - z_prev;
-  MatrixXd S = H_ * P_ * H_.transpose() + R;
+  MatrixXd S = H_ * P_ * H_.transpose() + R_;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
   
   x_ = x_ + (K * y);
-  P_ = (MatrixXd::Identity(x_.size(), x_.size()) - K * H) * P_;
+  P_ = (MatrixXd::Identity(x_.size(), x_.size()) - K * H_) * P_;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   Tools calc;
   VectorXd hx = calc.CartesianToPolar(x_);
-  MatrixXd Hj = calc.CalculateJacobian(z);
   VectorXd y = z - hx;
   y(1) = calc.NormalizePhi(y(1));
-  MatrixXd S = Hj * P_ * Hj.transpose() + R;
-  MatrixXd K = P_ * Hj.transpose() * S.inverse();
+  MatrixXd S = H_ * P_ * H_.transpose() + R_;
+  MatrixXd K = P_ * H_.transpose() * S.inverse();
+
+  x_ = x_ + (K * y);
+  P_ = (MatrixXd::Identity(x_.size(), x_.size()) - K * H_) * P_;
 }
