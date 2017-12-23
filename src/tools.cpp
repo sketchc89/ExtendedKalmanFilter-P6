@@ -55,6 +55,18 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   return Hj;
 }
 
+VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
+  VectorXd hx(4);
+  float px = x_state(0);
+  float py = x_state(1);
+  float vx = x_state(2);
+  float vy = x_state(3);
+
+  hx << std::pow(px*px + py*py, 0.5),
+     << NormalizePhi(std::atan2(py/px)),
+     << (px*vx + py*vy)/std::pow(px*px + py*py, 0.5);
+}
+
 float Tools::NormalizePhi(float phi) {
   return phi - 2*M_PI*std::floor((phi + M_PI) / (2*M_PI));
 }
