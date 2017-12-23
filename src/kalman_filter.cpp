@@ -3,9 +3,6 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-// Please note that the Eigen library does not initialize 
-// VectorXd or MatrixXd objects with zeros upon creation.
-
 KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
@@ -26,8 +23,8 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-  VectorXd z_meas = H_ * x_;
-  VectorXd y = z - z_meas;
+  VectorXd z_prev = H_ * x_;
+  VectorXd y = z - z_prev;
   MatrixXd S = H_ * P_ * H_.transpose() + R;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
   
@@ -36,8 +33,11 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Extended Kalman Filter equations
-  */
+  Tools calc;
+  VectorXd hx = calc.CartesianToPolar(x_);
+  MatrixXd Hj = calc.CalculateJacobian(z);
+  VectorXd y = z - hx;
+  y(1) = calc.NormalizePhi(y(1));
+  MatrixXd S = Hj * P_ * Hj.transpose() + R;
+  MatrixXd K = P_ * Hj.transpose() * S.inverse();
 }
