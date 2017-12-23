@@ -29,6 +29,14 @@ public:
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
 
+  /**
+   * A helper method to convert cartesian coordinates to polar coordinates.
+   */
+  VectorXd CartesianToPolar(const VectorXd& x_state);
+
+  /**
+   * A helper method to constrain all angles between -pi and +pi radians
+   */
   float NormalizePhi(float phi);
 
 };

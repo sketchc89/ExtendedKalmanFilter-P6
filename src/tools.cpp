@@ -63,8 +63,8 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
   float vy = x_state(3);
 
   hx << std::pow(px*px + py*py, 0.5),
-     << NormalizePhi(std::atan2(py/px)),
-     << (px*vx + py*vy)/std::pow(px*px + py*py, 0.5);
+        NormalizePhi(std::atan2(py,px)),
+        (px*vx + py*vy)/std::pow(px*px + py*py, 0.5);
 }
 
 float Tools::NormalizePhi(float phi) {
