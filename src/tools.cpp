@@ -62,9 +62,16 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
   float vx = x_state(2);
   float vy = x_state(3);
 
-  hx << std::pow(px*px + py*py, 0.5),
-        NormalizePhi(std::atan2(py,px)),
-        (px*vx + py*vy)/std::pow(px*px + py*py, 0.5);
+  float rho = std::pow(std::pow(px,2) + std::pow(py,2), 0.5);
+  float rho_dot;
+
+  if (rho < 0.032) {
+    hx.setZero();
+  } else {
+    hx << rho,
+          NormalizePhi(std::atan2(py,px)),
+          (px*vx + py*vy)/rho;
+  }
   return hx;
 }
 
@@ -72,11 +79,21 @@ float Tools::NormalizePhi(float phi) {
   return phi - 2*M_PI*std::floor((phi + M_PI) / (2*M_PI));
 }
 
-void Tools::PrintMatrix(MatrixXd &m) {
+void Tools::PrintMatrix(std::string name, const MatrixXd &m) {
   //TODO: Print with log
-  //for (int i = 0; i < m.size(); ++i) {
-  //  //log->info("Matrix {} {}", i, m[i]);
-  //  std::cout << i << m(i) << std::endl;
-  //}
-  std::cout << "Function doesn't do anything currently";
+  std::cout << "\nPrinting " << name << std::endl;
+  for (int i = 0; i < m.rows(); ++i) {
+    //log->info("Matrix {} {}", i, m[i]);
+    for (int j = 0; j < m.cols(); ++j) {
+      std::cout << i << "," << j << "\t" << m(i, j) << std::endl;
+    }
+  }
+}
+
+void Tools::PrintVector(std::string name, const VectorXd &v) {
+  //TODO: Print with log
+  std::cout << "\nPrinting " << name << std::endl;
+  for (int i = 0; i < v.size(); ++i) {
+    std::cout << i << "\t" << v(i) << std::endl;
+  }
 }
