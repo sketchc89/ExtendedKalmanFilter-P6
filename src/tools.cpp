@@ -56,7 +56,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 }
 
 VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
-  VectorXd hx(4);
+  VectorXd hx(3);
   float px = x_state(0);
   float py = x_state(1);
   float vx = x_state(2);
@@ -65,8 +65,18 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
   hx << std::pow(px*px + py*py, 0.5),
         NormalizePhi(std::atan2(py,px)),
         (px*vx + py*vy)/std::pow(px*px + py*py, 0.5);
+  return hx;
 }
 
 float Tools::NormalizePhi(float phi) {
   return phi - 2*M_PI*std::floor((phi + M_PI) / (2*M_PI));
+}
+
+void Tools::PrintMatrix(MatrixXd &m) {
+  //TODO: Print with log
+  //for (int i = 0; i < m.size(); ++i) {
+  //  //log->info("Matrix {} {}", i, m[i]);
+  //  std::cout << i << m(i) << std::endl;
+  //}
+  std::cout << "Function doesn't do anything currently";
 }

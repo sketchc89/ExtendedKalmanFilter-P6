@@ -38,6 +38,10 @@ public:
    * A helper method to constrain all angles between -pi and +pi radians
    */
   float NormalizePhi(float phi);
+  /**
+   * A helper method to log values in matrix
+   */
+  void PrintMatrix(MatrixXd& m);
 
 };
 
