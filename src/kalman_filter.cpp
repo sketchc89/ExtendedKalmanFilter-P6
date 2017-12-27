@@ -1,5 +1,7 @@
 #include "tools.h"
 #include "kalman_filter.h"
+#include "spdlog/spdlog.h"
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -34,13 +36,27 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
+  auto log = spdlog::stdout_color_mt("ekf_log");
+  log->info("Initializing variables");
   Tools calc;
   VectorXd hx = calc.CartesianToPolar(x_);
+  log->info("hx converted");
+  std::cout << hx[0] << hx.size();
+  for (int i = 0; i < hx.size(); ++i){
+    log->info("hx({}) {}", i, hx[i]);
+  }
+  for (int i = 0; i < z.size(); ++i){
+    log->info("z({}) {}", i, z[i]);
+  }
   VectorXd y = z - hx;
+  log->info("error calculated");
   y(1) = calc.NormalizePhi(y(1));
+  log->info("error normalized");
   MatrixXd S = H_ * P_ * H_.transpose() + R_;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
 
+  log->info("S & K calculated");
   x_ = x_ + (K * y);
   P_ = (MatrixXd::Identity(x_.size(), x_.size()) - K * H_) * P_;
+  log->info("x & P updated");
 }
