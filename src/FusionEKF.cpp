@@ -5,6 +5,7 @@
 #include "tools.h"
 #include "Eigen/Dense"
 #include <cmath>
+#include <string>
 #include <iostream>
 #include "spdlog/spdlog.h"
 
@@ -127,16 +128,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
              std::pow(dt,3)*noise_ax/2, 0, std::pow(dt,2)*noise_ax, 0,
              0, std::pow(dt,3)*noise_ay/2, 0, std::pow(dt,2)*noise_ay;
 
-  for (int i = 0; i < ekf_.F_.rows(); ++i){
-    for (int j = 0; j < ekf_.F_.cols(); ++j){
-      console->info("ekf_F_({}, {}) {}", i, j, ekf_.F_(i, j));
-    }
-  }
-  for (int i = 0; i < ekf_.Q_.rows(); ++i){
-    for (int j = 0; j < ekf_.Q_.cols(); ++j){
-      console->info("ekf_Q_({}, {}) {}", i, j, ekf_.Q_(i, j));
-    }
-  }
+  std::string F_name="F", Q_name="Q";
+  calc.PrintMatrix(F_name, ekf_.F_);
+  calc.PrintMatrix(Q_name, ekf_.Q_);
   ekf_.Predict();
   console->info("Prediction step end");
   /*****************************************************************************
@@ -147,17 +141,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     console->info("Updating with RADAR start");
     ekf_.H_ = calc.CalculateJacobian(ekf_.x_);
 
-    for (int i = 0; i < ekf_.H_.rows(); ++i){
-      for (int j = 0; j < ekf_.H_.cols(); ++j){
-        console->info("ekf_H_({}, {}) {}", i, j, ekf_.H_(i, j));
-      }
-    }
+    std::string H_name="H", R_name="R";
+    calc.PrintMatrix(H_name, ekf_.H_);
     ekf_.R_ = R_radar_;
-    for (int i = 0; i < ekf_.R_.rows(); ++i){
-      for (int j = 0; j < ekf_.R_.cols(); ++j){
-        console->info("ekf_R_({}, {}) {}", i, j, ekf_.R_(i, j));
-      }
-    }
+    calc.PrintMatrix(R_name, ekf_.R_);
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
     console->info("Updating with RADAR end");
   } else {

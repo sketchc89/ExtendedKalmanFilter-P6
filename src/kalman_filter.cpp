@@ -2,6 +2,7 @@
 #include "kalman_filter.h"
 #include "spdlog/spdlog.h"
 #include <iostream>
+#include <string>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -18,6 +19,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   H_ = H_in;
   R_ = R_in;
   Q_ = Q_in;
+  auto log = spdlog::stdout_color_mt("ekf_log");
 }
 
 void KalmanFilter::Predict() {
@@ -36,18 +38,19 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  auto log = spdlog::stdout_color_mt("ekf_log");
+  auto log = spdlog::get("ekf_log");
   log->info("Initializing variables");
   Tools calc;
   VectorXd hx = calc.CartesianToPolar(x_);
   log->info("hx converted");
-  std::cout << hx[0] << hx.size();
-  for (int i = 0; i < hx.size(); ++i){
-    log->info("hx({}) {}", i, hx[i]);
+  if (hx.isZero(1e-3)) {
+    log->warn("Object too close for RADAR to detect");
+    return;
   }
-  for (int i = 0; i < z.size(); ++i){
-    log->info("z({}) {}", i, z[i]);
-  }
+  std::string hx_name = "hx";
+  calc.PrintVector(hx_name, hx);
+  std::string z_name = "z";
+  calc.PrintVector(z_name, z);
   VectorXd y = z - hx;
   log->info("error calculated");
   y(1) = calc.NormalizePhi(y(1));
