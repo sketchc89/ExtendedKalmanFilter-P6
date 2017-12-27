@@ -1,5 +1,6 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
+#include <string>
 #include <vector>
 #include "Eigen/Dense"
 
@@ -41,8 +42,12 @@ public:
   /**
    * A helper method to log values in matrix
    */
-  void PrintMatrix(MatrixXd& m);
+  void PrintMatrix(std::string name, const MatrixXd& m);
 
+  /**
+   * A helper method to log values in vector
+   */
+  void PrintVector(std::string name, const VectorXd& v);
 };
 
 #endif /* TOOLS_H_ */
