@@ -50,13 +50,13 @@ The code was developed using the [Catch testing framework](https://github.com/ca
 
 * First compile tests_main.cpp in order to not have to recompile
 
-sh```
+```sh
 $ g++ --std=c++11 tests_main.cpp -c
 ```
 
 * Next compile tests
 
-sh```
+```sh
 $ g++ --std=c++11 tests_main.o test_rmse.cpp -o test_rmse
 $ ./test_rmse -r compact
 ```
