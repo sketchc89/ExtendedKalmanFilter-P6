@@ -1,6 +1,7 @@
 #ifndef M_PI
   #define M_PI 3.1415926535897;
 #endif
+const double M_EPS = 0.000001;
 #include "catch.hpp"
 #include "../tools.cpp"
 
@@ -86,37 +87,92 @@ TEST_CASE("Jacobian calculated", "[jacobian]") {
   x_predicted << 1, 2, 0.2, 0.4;
 
   Hj = calc.CalculateJacobian(x_predicted);
-  REQUIRE(Hj(0,0) == Approx(0.447214).epsilon(0.000001));
-  REQUIRE(Hj(0,1) == Approx(0.894427).epsilon(0.000001));
-  REQUIRE(Hj(0,2) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(0,3) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(1,0) == Approx(-0.4).epsilon(0.000001));
-  REQUIRE(Hj(1,1) == Approx(0.2).epsilon(0.000001));
-  REQUIRE(Hj(1,2) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(1,3) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(2,0) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(2,1) == Approx(0).epsilon(0.000001));
-  REQUIRE(Hj(2,2) == Approx(0.447214).epsilon(0.000001));
-  REQUIRE(Hj(2,3) == Approx(0.894427).epsilon(0.000001));
+  REQUIRE(Hj(0,0) == Approx(0.447214).epsilon(M_EPS));
+  REQUIRE(Hj(0,1) == Approx(0.894427).epsilon(M_EPS));
+  REQUIRE(Hj(0,2) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(0,3) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(1,0) == Approx(-0.4).epsilon(M_EPS));
+  REQUIRE(Hj(1,1) == Approx(0.2).epsilon(M_EPS));
+  REQUIRE(Hj(1,2) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(1,3) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(2,0) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(2,1) == Approx(0).epsilon(M_EPS));
+  REQUIRE(Hj(2,2) == Approx(0.447214).epsilon(M_EPS));
+  REQUIRE(Hj(2,3) == Approx(0.894427).epsilon(M_EPS));
 }
 
 TEST_CASE("Normalize phi calculated" "[normalize-phi]") {
   Tools calc;
   
-  REQUIRE(calc.NormalizePhi(0.25*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-0.25*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(0.75*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-0.75*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(1.25*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-1.25*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(1.75*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-1.75*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(2.25*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-2.25*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(2.75*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-2.75*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(3.25*M_PI) == Approx(-0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-3.25*M_PI) == Approx(0.75*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(3.75*M_PI) == Approx(-0.25*M_PI).epsilon(0.000001));
-  REQUIRE(calc.NormalizePhi(-3.75*M_PI) == Approx(0.25*M_PI).epsilon(0.000001));
+  REQUIRE(calc.NormalizePhi(0.25*M_PI) == Approx(0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-0.25*M_PI) == Approx(-0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(0.75*M_PI) == Approx(0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-0.75*M_PI) == Approx(-0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(1.25*M_PI) == Approx(-0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-1.25*M_PI) == Approx(0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(1.75*M_PI) == Approx(-0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-1.75*M_PI) == Approx(0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(2.25*M_PI) == Approx(0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-2.25*M_PI) == Approx(-0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(2.75*M_PI) == Approx(0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-2.75*M_PI) == Approx(-0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(3.25*M_PI) == Approx(-0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-3.25*M_PI) == Approx(0.75*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(3.75*M_PI) == Approx(-0.25*M_PI).epsilon(M_EPS));
+  REQUIRE(calc.NormalizePhi(-3.75*M_PI) == Approx(0.25*M_PI).epsilon(M_EPS));
 }
+
+TEST_CASE("Convert cartesian to polar" "[cartesian-polar]") {
+  Tools calc;
+  Eigen::VectorXd cart(4), polar(3), calc_polar;
+  double sq_2 = std::pow(2, 0.5);
+  
+  cart << 1, 0, 0, 0;  
+  polar << 1, 0, 0;
+  calc_polar = calc.CartesianToPolar(cart);
+  REQUIRE(calc_polar(0) == Approx(polar(0)).epsilon(M_EPS));
+  REQUIRE(calc_polar(1) == Approx(polar(1)).epsilon(M_EPS));
+  REQUIRE(calc_polar(2) == Approx(polar(2)).epsilon(M_EPS));
+
+  cart << 10, 10, 0, 0;  
+  polar << 10*sq_2, 0.25*M_PI, 0;
+  calc_polar = calc.CartesianToPolar(cart);
+  REQUIRE(calc_polar(0) == Approx(polar(0)).epsilon(M_EPS));
+  REQUIRE(calc_polar(1) == Approx(polar(1)).epsilon(M_EPS));
+  REQUIRE(calc_polar(2) == Approx(polar(2)).epsilon(M_EPS));
+  
+  cart << 1, 0, 1, 0;  
+  polar << 1, 0, 1;
+  calc_polar = calc.CartesianToPolar(cart);
+  REQUIRE(calc_polar(0) == Approx(polar(0)).epsilon(M_EPS));
+  REQUIRE(calc_polar(1) == Approx(polar(1)).epsilon(M_EPS));
+  REQUIRE(calc_polar(2) == Approx(polar(2)).epsilon(M_EPS));
+  
+  cart << 1, 0, 0, 1;  
+  polar << 1, 0, 0;
+  calc_polar = calc.CartesianToPolar(cart);
+  REQUIRE(calc_polar(0) == Approx(polar(0)).epsilon(M_EPS));
+  REQUIRE(calc_polar(1) == Approx(polar(1)).epsilon(M_EPS));
+  REQUIRE(calc_polar(2) == Approx(polar(2)).epsilon(M_EPS));
+  
+  cart << 1, 1, 1, 1;  
+  polar << sq_2, 0.25*M_PI, sq_2;
+  calc_polar = calc.CartesianToPolar(cart);
+  REQUIRE(calc_polar(0) == Approx(polar(0)).epsilon(M_EPS));
+  REQUIRE(calc_polar(1) == Approx(polar(1)).epsilon(M_EPS));
+  REQUIRE(calc_polar(2) == Approx(polar(2)).epsilon(M_EPS));
+} 
+
+TEST_CASE("Targets too close return 0" "[cartesian-polar]") {
+  Tools calc;
+  Eigen::VectorXd cart(4), polar(3);
+  cart << 0, 0, 0, 0;
+  polar << 0, 0, 0;
+  REQUIRE(calc.CartesianToPolar(cart) == polar);  
+  cart << 0.01, 0.01, 10, 10;
+  REQUIRE(calc.CartesianToPolar(cart) == polar);
+  cart << 0, 0.0319, 10, 10;
+  REQUIRE(calc.CartesianToPolar(cart) == polar);
+  cart << 0.0319, 0, 10, 10;
+  REQUIRE(calc.CartesianToPolar(cart) == polar);
+} 
