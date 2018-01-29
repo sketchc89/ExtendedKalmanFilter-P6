@@ -3,6 +3,13 @@ Self-Driving Car Engineer Nanodegree Program
 
 This project utilizes a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements.
 
+## Results
+
+![Dataset 1](./Docs/dataset_1.gif)
+![Dataset 2](./Docs/dataset_2.gif)
+
+## Protocol
+
 Here is the main protcol that main.cpp uses for uWebSocketIO in communicating with the simulator.
 
 INPUT: values provided by the simulator to the c++ program
