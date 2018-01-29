@@ -19,8 +19,6 @@ using std::vector;
  * Constructor.
  */
 FusionEKF::FusionEKF() {
-  //console_ = spdlog::get("console");
-  //console_->info("Welcome to spdlog");
 
   is_initialized_ = false;
 
@@ -44,6 +42,7 @@ FusionEKF::FusionEKF() {
   H_laser_ << 1, 0, 0, 0,
               0, 1, 0, 0;
   Hj_.setZero();
+
 }
 
 /**
@@ -59,6 +58,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
   if (!is_initialized_) {
     auto console = spdlog::stdout_logger_mt("console");
+    //console->set_level(spdlog::level::debug);
     console->info("First measurement");
     console->info("Time: {}", measurement_pack.timestamp_);
     // first measurement
@@ -80,7 +80,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
-      console->info("Initializing with RADAR");
+      console->debug("Initializing with RADAR");
       float rho = measurement_pack.raw_measurements_(0);
       float phi = calc.NormalizePhi(measurement_pack.raw_measurements_(1));
       float rho_dot = measurement_pack.raw_measurements_(2);
@@ -93,7 +93,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Initialize state.
       */
-      console->info("Initializing with LIDAR");
+      console->debug("Initializing with LIDAR");
       ekf_.x_ << measurement_pack.raw_measurements_(0), 
                  measurement_pack.raw_measurements_(1),
                  0,
@@ -102,7 +102,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
-    console->info("Initialization complete {}", ekf_.x_(0,0));
+    console->debug("Initialization complete {}", ekf_.x_(0,0));
     return;
   }
 
@@ -111,10 +111,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
   auto console = spdlog::get("console");
   console->info("Time: {}", measurement_pack.timestamp_);
-  console->info(measurement_pack.timestamp_);
-  Eigen::IOFormat CommaInitFmt(Eigen::StreamPrecision, Eigen::DontAlignCols,
-                               ", ", ", ", "", "", " << ", ";");
-  console->info("Prediction step start");
+  console->debug("Prediction step start");
   float dt;
   float noise_ax = 9.0;
   float noise_ay = 9.0;
@@ -128,15 +125,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
              std::pow(dt,3)*noise_ax/2, 0, std::pow(dt,2)*noise_ax, 0,
              0, std::pow(dt,3)*noise_ay/2, 0, std::pow(dt,2)*noise_ay;
 
-  std::string F_name="F", Q_name="Q";
+  std::string F_name="F", Q_name="Q"; 
   calc.PrintMatrix(F_name, ekf_.F_);
   calc.PrintMatrix(Q_name, ekf_.Q_);
   ekf_.Predict();
-  console->info("Prediction step end");
+  console->debug("Prediction step end");
+
   /*****************************************************************************
    *  Update
    ****************************************************************************/
-  console->info("Update start");
+  console->debug("Update start");
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     console->info("Updating with RADAR start");
     ekf_.H_ = calc.CalculateJacobian(ekf_.x_);
@@ -146,16 +144,17 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.R_ = R_radar_;
     calc.PrintMatrix(R_name, ekf_.R_);
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
-    console->info("Updating with RADAR end");
+    console->debug("Updating with RADAR end");
   } else {
-    console->info("Updating with LIDAR start");
+    console->debug("Updating with LIDAR start");
     ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
-    console->info("Updating with LIDAR end");
+    console->debug("Updating with LIDAR end");
   }
-  console->info("Update end");
-
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+  console->debug("Update end");
+  
+  std::string x_name="x", P_name="P";
+  calc.PrintMatrix(x_name, ekf_.x_);
+  calc.PrintMatrix(P_name, ekf_.P_);
 }

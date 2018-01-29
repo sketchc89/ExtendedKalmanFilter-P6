@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "tools.h"
+#include "spdlog/spdlog.h"
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
@@ -80,20 +81,21 @@ float Tools::NormalizePhi(float phi) {
 }
 
 void Tools::PrintMatrix(std::string name, const MatrixXd &m) {
-  //TODO: Print with log
-  std::cout << "\nPrinting " << name << std::endl;
+  auto console = spdlog::get("console");
+  console->info("Printing  {}x{} matrix {}", m.rows(), m.cols(), name);
   for (int i = 0; i < m.rows(); ++i) {
-    //log->info("Matrix {} {}", i, m[i]);
     for (int j = 0; j < m.cols(); ++j) {
-      std::cout << i << "," << j << "\t" << m(i, j) << std::endl;
+      console->info("\t{}\t{},{}\t{}", name, i, j, m(i, j));
     }
   }
+  console->info("----------------------------");
 }
 
 void Tools::PrintVector(std::string name, const VectorXd &v) {
-  //TODO: Print with log
-  std::cout << "\nPrinting " << name << std::endl;
+  auto console = spdlog::get("console");
+  console->info("Printing vector {}", name);
   for (int i = 0; i < v.size(); ++i) {
-    std::cout << i << "\t" << v(i) << std::endl;
+    console->info("\t{}\t{}\t{}", name, i, v(i));
   }
+  console->info("----------------------------");
 }

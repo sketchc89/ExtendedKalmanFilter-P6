@@ -39,10 +39,11 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   auto log = spdlog::get("ekf_log");
-  log->info("Initializing variables");
+  //log->set_level(spdlog::level::debug);
+  log->debug("Initializing variables");
   Tools calc;
   VectorXd hx = calc.CartesianToPolar(x_);
-  log->info("hx converted");
+  log->debug("hx converted");
   if (hx.isZero(1e-3)) {
     log->warn("Object too close for RADAR to detect");
     return;
@@ -52,14 +53,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   std::string z_name = "z";
   calc.PrintVector(z_name, z);
   VectorXd y = z - hx;
-  log->info("error calculated");
+  log->debug("error calculated");
   y(1) = calc.NormalizePhi(y(1));
-  log->info("error normalized");
+  log->debug("error normalized");
   MatrixXd S = H_ * P_ * H_.transpose() + R_;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
 
-  log->info("S & K calculated");
+  log->debug("S & K calculated");
   x_ = x_ + (K * y);
   P_ = (MatrixXd::Identity(x_.size(), x_.size()) - K * H_) * P_;
-  log->info("x & P updated");
+  log->debug("x & P updated");
 }
