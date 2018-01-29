@@ -72,8 +72,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             0, 0, 0, 1000;
     MatrixXd Q_in = MatrixXd(4,4);
     Q_in.setZero();
-    MatrixXd F_in = MatrixXd(4,4);
-    F_in.setZero();
+    MatrixXd F_in = MatrixXd::Identity(4,4);
     ekf_.Init(x_in, P_in, F_in, H_laser_, R_laser_, Q_in);
 
     previous_timestamp_ = measurement_pack.timestamp_;
@@ -117,9 +116,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
                                ", ", ", ", "", "", " << ", ";");
   console->info("Prediction step start");
   float dt;
-  float noise_ax = 9;
-  float noise_ay = 9;
+  float noise_ax = 9.0;
+  float noise_ay = 9.0;
   dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.;
+  previous_timestamp_ = measurement_pack.timestamp_;
 
   ekf_.F_(0,2) = dt;
   ekf_.F_(1,3) = dt;
