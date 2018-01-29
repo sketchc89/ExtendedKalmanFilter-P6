@@ -5,8 +5,12 @@ This project utilizes a kalman filter to estimate the state of a moving object o
 
 ## Results
 
+The ExtendedKalmanFilter program was run on both datasets. The results are below.
 ![Dataset 1](./Docs/dataset_1.gif)
 ![Dataset 2](./Docs/dataset_2.gif)
+
+## Areas for improvement
+* The helper functions for the program were tested extensively, the program itself could use more unit testing.
 
 ## Protocol
 
@@ -39,7 +43,8 @@ OUTPUT: values provided by the c++ program to the simulator
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
-
+* pthread library for spdlog
+* 
 ## Basic Build Instructions
 
 1. Clone this repo.
